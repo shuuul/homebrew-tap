@@ -1,10 +1,18 @@
 name: brew test-bot
 
+# Bottles are built on PRs only: `brew pr-pull` (publish.yml) pushes the
+# bottle commit to main, so a push trigger would rebuild the same formula on
+# a macOS runner for nothing.
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    paths:
+      - "Formula/**"
+      - ".github/workflows/tests.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: test-bot-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions: {}
 
@@ -28,6 +36,7 @@ jobs:
         #       image: ghcr.io/homebrew/brew:main
         #       options: --privileged --gpus all
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     # TODO(WS-09): restore with the Linux matrix entry:
     # container: ${{ fromJSON(toJSON(matrix.container)) }} # zizmor: ignore[unpinned-images]
     permissions:
