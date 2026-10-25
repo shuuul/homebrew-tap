@@ -12,6 +12,11 @@ class Aimd < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
+  bottle do
+    root_url "https://github.com/shuuul/homebrew-tap/releases/download/aimd-1.0.0"
+    sha256 cellar: :any, arm64_golden_gate: "317c3ca55ab491eb4d8c3029b7962a2adfb1f0afc4d83055f9721a9730e58bfd"
+  end
+
   # The engine is MLX-only. Linux needs the tap's CUDA-enabled mlx formula
   # (specs/002-native-engine.md WS-09); until then the formula is macOS arm64.
   depends_on "rust" => :build
