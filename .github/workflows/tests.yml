@@ -28,7 +28,7 @@ jobs:
         # macOS arm64 only: aimd is MLX-only and brew mlx is a macOS arm64
         # formula. Linux bottles need the tap's CUDA-enabled mlx formula and a
         # CUDA-capable self-hosted runner (shuuul/aimd specs/002 WS-09).
-        os: [ macos-26 ]
+        os: [ xcode-27 ]  # macOS 27: brew mlx bottles exist only for the newest macOS
         # TODO(WS-09): enable once Formula/aimd.rb supports Linux, e.g.
         # include:
         #   - os: [ self-hosted, linux, x64, cuda ]
