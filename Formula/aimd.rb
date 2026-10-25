@@ -4,7 +4,7 @@ class Aimd < Formula
   # Bumped by shuuul/aimd's release workflow (url + sha256 in one PR).
   # PLACEHOLDER until the first Rust release tag exists; see README.md.
   url "https://github.com/shuuul/aimd/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 "b0070e4a33b1b5d44af4e215acb74302d126cc98d6c6ee89f04d22f3f14aea84"
   license "Apache-2.0"
   head "https://github.com/shuuul/aimd.git", branch: "main"
 
