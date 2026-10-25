@@ -54,7 +54,7 @@ class Aimd < Formula
     system bin/"aimd", "page.html", "-o", "page_out.md"
     assert_match "pandoc **works**", (testpath/"page_out.md").read
 
-    assert_path_exists bin/"aimd-api"
+    assert_match "loopback-only", shell_output("#{bin}/aimd-api --help")
     assert_path_exists bin/"aimd-mcp"
   end
 end
