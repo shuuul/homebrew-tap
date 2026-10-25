@@ -1,16 +1,16 @@
 class Aimd < Formula
   desc "Turn URLs, audio/video, and documents into Markdown context for LLMs"
   homepage "https://github.com/shuuul/aimd"
-  # Bumped by shuuul/aimd's rust-release workflow (url + sha256 in one PR).
+  # Bumped by shuuul/aimd's release workflow (url + sha256 in one PR).
   # PLACEHOLDER until the first Rust release tag exists; see README.md.
-  url "https://github.com/shuuul/aimd/archive/refs/tags/aimd-rs-v0.1.0.tar.gz"
+  url "https://github.com/shuuul/aimd/archive/refs/tags/v1.0.0.tar.gz"
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
   license "Apache-2.0"
   head "https://github.com/shuuul/aimd.git", branch: "main"
 
   livecheck do
     url :stable
-    regex(/^aimd-rs-v?(\d+(?:\.\d+)+)$/i)
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
   # The engine is MLX-only. Linux needs the tap's CUDA-enabled mlx formula

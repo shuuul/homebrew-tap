@@ -26,7 +26,7 @@ once the CUDA-enabled `mlx` formula lands (aimd spec 002, WS-09).
 
 ## Releases and bottles
 
-- `shuuul/aimd`'s `rust-release` workflow opens an `aimd <version>` PR here
+- `shuuul/aimd`'s `release` workflow opens an `aimd <version>` PR here
   that updates the formula `url`/`sha256` to the new release tag.
 - `brew test-bot` (`.github/workflows/tests.yml`) builds and tests the
   bottle on that PR (macOS arm64) and uploads it as a workflow artifact.
