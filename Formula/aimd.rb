@@ -39,13 +39,13 @@ class Aimd < Formula
     # crates/aimd-mlx/build.rs links libmlx from here and embeds an rpath to
     # its lib dir; opt_prefix keeps the bottle valid across mlx revisions.
     ENV["MLX_PREFIX"] = formula_opt_prefix(OS.mac? ? "mlx" : "shuuul/tap/mlx-cuda")
-    # One shared target dir so the three binaries reuse a single build.
+    # One shared target dir so the two binaries reuse a single build.
     ENV["CARGO_TARGET_DIR"] = buildpath/"target"
     # The workspace release profile keeps debuginfo for local profiling;
     # bottles do not need it.
     ENV["CARGO_PROFILE_RELEASE_DEBUG"] = "false"
 
-    %w[aimd-cli aimd-api aimd-mcp].each do |crate|
+    %w[aimd-cli aimd-mcp].each do |crate|
       system "cargo", "install", *std_cargo_args(path: "crates/#{crate}")
     end
   end
@@ -65,7 +65,6 @@ class Aimd < Formula
     system bin/"aimd", "page.html", "-o", "page_out.md"
     assert_match "pandoc **works**", (testpath/"page_out.md").read
 
-    assert_match "loopback-only", shell_output("#{bin}/aimd-api --help")
     assert_path_exists bin/"aimd-mcp"
   end
 end
