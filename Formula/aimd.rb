@@ -2,8 +2,8 @@ class Aimd < Formula
   desc "Turn URLs, audio/video, and documents into Markdown context for LLMs"
   homepage "https://github.com/shuuul/aimd"
   # Bumped by shuuul/aimd's release workflow (url + sha256 in one PR).
-  url "https://github.com/shuuul/aimd/archive/refs/tags/v1.1.0.tar.gz"
-  sha256 "79f708f8733eae1477e2818123a727289e39c07365adbafdb9e47c9813c0d676"
+  url "https://github.com/shuuul/aimd/archive/refs/tags/v1.2.0.tar.gz"
+  sha256 "dffb9f9f831c367beeafaaea5e634581b33459c088bf76af6946f57615ef6b94"
   license "Apache-2.0"
   head "https://github.com/shuuul/aimd.git", branch: "main"
 
