@@ -17,21 +17,28 @@ class Aimd < Formula
     sha256 cellar: :any, arm64_golden_gate: "317c3ca55ab491eb4d8c3029b7962a2adfb1f0afc4d83055f9721a9730e58bfd"
   end
 
-  # The engine is MLX-only. Linux needs the tap's CUDA-enabled mlx formula
-  # (specs/002-native-engine.md WS-09); until then the formula is macOS arm64.
+  # The engine is MLX-only: Metal on macOS arm64 (homebrew-core mlx), CUDA on
+  # Linux (this tap's mlx-cuda; NVIDIA driver, CUDA 13, cuDNN 9 and NCCL 2
+  # come from the system). Linux installs build from source (no bottle).
   depends_on "rust" => :build
-  depends_on arch: :arm64
   depends_on "ffmpeg"
-  depends_on :macos
-  depends_on "mlx"
   depends_on "mupdf"
   depends_on "pandoc"
   depends_on "yt-dlp"
 
+  on_macos do
+    depends_on arch: :arm64
+    depends_on "mlx"
+  end
+
+  on_linux do
+    depends_on "shuuul/tap/mlx-cuda"
+  end
+
   def install
     # crates/aimd-mlx/build.rs links libmlx from here and embeds an rpath to
     # its lib dir; opt_prefix keeps the bottle valid across mlx revisions.
-    ENV["MLX_PREFIX"] = formula_opt_prefix("mlx")
+    ENV["MLX_PREFIX"] = formula_opt_prefix(OS.mac? ? "mlx" : "shuuul/tap/mlx-cuda")
     # One shared target dir so the three binaries reuse a single build.
     ENV["CARGO_TARGET_DIR"] = buildpath/"target"
     # The workspace release profile keeps debuginfo for local profiling;
@@ -44,7 +51,7 @@ class Aimd < Formula
   end
 
   test do
-    # Hermetic: no model weights, no network. Hosted runners may lack Metal.
+    # Hermetic: no model weights, no network, no GPU work.
     ENV["AIMD_MLX_DEVICE"] = "cpu"
 
     assert_match "Usage: aimd", shell_output("#{bin}/aimd --help")

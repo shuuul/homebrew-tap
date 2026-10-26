@@ -25,20 +25,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macOS arm64 only: aimd is MLX-only and brew mlx is a macOS arm64
-        # formula. Linux bottles need the tap's CUDA-enabled mlx formula and a
-        # CUDA-capable self-hosted runner (shuuul/aimd specs/002 WS-09).
+        # macOS arm64 only. Linux (Formula/mlx-cuda.rb) installs from source:
+        # libmlx.so needs the NVIDIA driver, which hosted runners lack, and
+        # there is no self-hosted runner (shuuul/aimd specs/archive/003-linux-mlx-cuda.md).
         os: [ xcode-27 ]  # macOS 27: brew mlx bottles exist only for the newest macOS
-        # TODO(WS-09): enable once Formula/aimd.rb supports Linux, e.g.
-        # include:
-        #   - os: [ self-hosted, linux, x64, cuda ]
-        #     container:
-        #       image: ghcr.io/homebrew/brew:main
-        #       options: --privileged --gpus all
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
-    # TODO(WS-09): restore with the Linux matrix entry:
-    # container: ${{ fromJSON(toJSON(matrix.container)) }} # zizmor: ignore[unpinned-images]
     permissions:
       actions: read
       checks: read
