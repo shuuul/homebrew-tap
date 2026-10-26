@@ -21,8 +21,14 @@ This installs three executables: `aimd` (CLI), `aimd-api` (HTTP API), and
 dependencies: `mlx`, `pandoc`, `yt-dlp`, `ffmpeg`, and `mupdf`. Model
 weights download from Hugging Face on first use into the HF cache.
 
-Platform: macOS on Apple Silicon (MLX Metal). Linux bottles are planned
-once the CUDA-enabled `mlx` formula lands (aimd spec 002, WS-09).
+Platforms:
+
+- macOS on Apple Silicon (MLX Metal): bottled, depends on homebrew-core `mlx`.
+- Linux x86_64 / aarch64 with an NVIDIA GPU (MLX CUDA): builds from source
+  (a few minutes, `rust` comes in as a build dependency) against this tap's
+  `mlx-cuda`, which repackages MLX's official `mlx-cuda-13` wheel. The NVIDIA
+  driver, CUDA 13, cuDNN 9 and NCCL 2 come from the system and must be on the
+  dynamic loader path; see `brew info shuuul/tap/mlx-cuda`.
 
 ## Releases and bottles
 
@@ -30,6 +36,8 @@ once the CUDA-enabled `mlx` formula lands (aimd spec 002, WS-09).
   that updates the formula `url`/`sha256` to the new release tag.
 - `brew test-bot` (`.github/workflows/tests.yml`) builds and tests the
   bottle on that PR (macOS arm64) and uploads it as a workflow artifact.
+  There are no Linux bottles: hosted runners have no NVIDIA driver to load
+  `libmlx.so`, so Linux installs build from source.
 - After CI passes, run the `brew pr-pull` workflow
   (`.github/workflows/publish.yml`) with the PR number. It uploads the
   bottles to this repo's GitHub Releases, adds the `bottle do` block, and
