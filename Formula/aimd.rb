@@ -2,8 +2,8 @@ class Aimd < Formula
   desc "Turn URLs, audio/video, and documents into Markdown context for LLMs"
   homepage "https://github.com/shuuul/aimd"
   # Bumped by shuuul/aimd's release workflow (url + sha256 in one PR).
-  url "https://github.com/shuuul/aimd/archive/refs/tags/v1.1.0.tar.gz"
-  sha256 "79f708f8733eae1477e2818123a727289e39c07365adbafdb9e47c9813c0d676"
+  url "https://github.com/shuuul/aimd/archive/refs/tags/v1.2.0.tar.gz"
+  sha256 "dffb9f9f831c367beeafaaea5e634581b33459c088bf76af6946f57615ef6b94"
   license "Apache-2.0"
   head "https://github.com/shuuul/aimd.git", branch: "main"
 
@@ -39,13 +39,13 @@ class Aimd < Formula
     # crates/aimd-mlx/build.rs links libmlx from here and embeds an rpath to
     # its lib dir; opt_prefix keeps the bottle valid across mlx revisions.
     ENV["MLX_PREFIX"] = formula_opt_prefix(OS.mac? ? "mlx" : "shuuul/tap/mlx-cuda")
-    # One shared target dir so the three binaries reuse a single build.
+    # One shared target dir so the two binaries reuse a single build.
     ENV["CARGO_TARGET_DIR"] = buildpath/"target"
     # The workspace release profile keeps debuginfo for local profiling;
     # bottles do not need it.
     ENV["CARGO_PROFILE_RELEASE_DEBUG"] = "false"
 
-    %w[aimd-cli aimd-api aimd-mcp].each do |crate|
+    %w[aimd-cli aimd-mcp].each do |crate|
       system "cargo", "install", *std_cargo_args(path: "crates/#{crate}")
     end
   end
@@ -65,7 +65,6 @@ class Aimd < Formula
     system bin/"aimd", "page.html", "-o", "page_out.md"
     assert_match "pandoc **works**", (testpath/"page_out.md").read
 
-    assert_match "loopback-only", shell_output("#{bin}/aimd-api --help")
     assert_path_exists bin/"aimd-mcp"
   end
 end
