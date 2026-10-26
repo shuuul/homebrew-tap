@@ -14,7 +14,8 @@ class Aimd < Formula
 
   bottle do
     root_url "https://github.com/shuuul/homebrew-tap/releases/download/aimd-1.0.0"
-    sha256 cellar: :any, arm64_golden_gate: "317c3ca55ab491eb4d8c3029b7962a2adfb1f0afc4d83055f9721a9730e58bfd"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "e544e49cc162e8d7e4bfab4d65f65843633f5d087acf6eb34953c25257209081"
   end
 
   # The engine is MLX-only: Metal on macOS arm64 (homebrew-core mlx), CUDA on
