@@ -25,9 +25,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macOS arm64 only. Linux (Formula/mlx-cuda.rb) installs from source:
-        # libmlx.so needs the NVIDIA driver, which hosted runners lack, and
-        # there is no self-hosted runner (shuuul/aimd specs/archive/003-linux-mlx-cuda.md).
+        # macOS arm64 here. aimd and mlx-cuda have no Linux bottles: libmlx.so
+        # needs the NVIDIA driver, which hosted runners lack, and there is no
+        # self-hosted runner (shuuul/aimd specs/archive/003-linux-mlx-cuda.md).
+        # GPU-free formulae get Linux bottles from the test-bot-linux job.
         os: [ xcode-27 ]  # macOS 27: brew mlx bottles exist only for the newest macOS
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
@@ -60,6 +61,73 @@ jobs:
 
       - name: Upload bottles as artifact
         if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bottles_${{ matrix.os }}
+          path: '*.bottle.*'
+
+  # Linux bottles for the formulae in LINUX_BOTTLES only (no GPU needed).
+  # aimd depends on them but cannot build here, so dependents are skipped.
+  test-bot-linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        # ubuntu-22.04 matches the glibc of Homebrew's Linux bottle baseline.
+        os: [ ubuntu-22.04, ubuntu-22.04-arm ]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    env:
+      LINUX_BOTTLES: firecrawl-local
+    permissions:
+      actions: read
+      checks: read
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@4790763c0a3ba4036f72634dc079c4a7dfcd4878 # 2026.10.19.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: brew test-bot --only-cleanup-before
+
+      - run: brew test-bot --only-setup
+
+      - name: Detect changed formulae
+        id: detect
+        run: brew test-bot --only-formulae-detect
+
+      - name: Keep Linux-bottled formulae
+        id: linux
+        env:
+          TESTING: ${{ steps.detect.outputs.testing_formulae }}
+          ADDED: ${{ steps.detect.outputs.added_formulae }}
+        run: |
+          keep() {
+            local out=() name
+            IFS=, read -ra names <<< "$1"
+            for name in "${names[@]}"; do
+              for allowed in $LINUX_BOTTLES; do
+                [[ "${name##*/}" == "$allowed" ]] && out+=("$name")
+              done
+            done
+            (IFS=,; echo "${out[*]}")
+          }
+          echo "testing=$(keep "$TESTING")" >> "$GITHUB_OUTPUT"
+          echo "added=$(keep "$ADDED")" >> "$GITHUB_OUTPUT"
+
+      - name: Build bottles
+        if: steps.linux.outputs.testing != '' && github.event_name == 'pull_request'
+        env:
+          TESTING: ${{ steps.linux.outputs.testing }}
+          ADDED: ${{ steps.linux.outputs.added }}
+        run: |
+          brew test-bot --only-formulae --skip-dependents \
+            --testing-formulae="$TESTING" --added-formulae="$ADDED"
+
+      - name: Upload bottles as artifact
+        if: always() && steps.linux.outputs.testing != '' && github.event_name == 'pull_request'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: bottles_${{ matrix.os }}
