@@ -24,6 +24,7 @@ class Aimd < Formula
   depends_on "ffmpeg"
   depends_on "mupdf"
   depends_on "pandoc"
+  depends_on "shuuul/tap/firecrawl-local"
   depends_on "yt-dlp"
 
   on_macos do
