@@ -72,8 +72,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # ubuntu-22.04 matches the glibc of Homebrew's Linux bottle baseline.
-        os: [ ubuntu-22.04, ubuntu-22.04-arm ]
+        # Homebrew's brew doctor rejects ubuntu-22.04's glibc 2.35 as too old.
+        os: [ ubuntu-24.04, ubuntu-24.04-arm ]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     env:

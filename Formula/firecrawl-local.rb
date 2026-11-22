@@ -6,10 +6,8 @@ class FirecrawlLocal < Formula
   license "AGPL-3.0-only"
 
   livecheck do
-    url "https://crates.io/api/v1/crates/firecrawl-local"
-    strategy :json do |json|
-      json.dig("crate", "max_stable_version")
-    end
+    url :stable
+    strategy :crate
   end
 
   depends_on "rust" => :build
