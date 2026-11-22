@@ -15,11 +15,12 @@ class Aimd < Formula
   bottle do
     root_url "https://github.com/shuuul/homebrew-tap/releases/download/aimd-1.5.0"
     sha256 cellar: :any, arm64_golden_gate: "3c846bd349c247be3a5310b8bf6148b3f80acf501577fe1e8f57a7820c39a56e"
+    sha256 cellar: :any, x86_64_linux:      "8521bc2483eae0fedb9a8d62f538ce588bd2f1a62b2e4e69a660d1fcfa715ac2"
   end
 
   # The engine is MLX-only: Metal on macOS arm64 (homebrew-core mlx), CUDA on
-  # Linux (this tap's mlx-cuda; NVIDIA driver, CUDA 13, cuDNN 9 and NCCL 2
-  # come from the system). Linux installs build from source (no bottle).
+  # Linux through this tap's mlx-cuda. The NVIDIA driver, CUDA 13, cuDNN 9
+  # and NCCL 2 come from the system.
   depends_on "rust" => :build
   depends_on "ffmpeg"
   depends_on "mupdf"

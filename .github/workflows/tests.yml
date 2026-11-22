@@ -25,9 +25,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macOS arm64 here. aimd and mlx-cuda have no Linux bottles: libmlx.so
-        # needs the NVIDIA driver, which hosted runners lack, and there is no
-        # self-hosted runner (shuuul/aimd specs/archive/003-linux-mlx-cuda.md).
+        # macOS arm64 here. Build aimd Linux bottles separately on a host
+        # with the NVIDIA stack so brew test can load libmlx.so.
         # GPU-free formulae get Linux bottles from the test-bot-linux job.
         os: [ xcode-27 ]  # macOS 27: brew mlx bottles exist only for the newest macOS
     runs-on: ${{ matrix.os }}
