@@ -10,6 +10,13 @@ class FirecrawlLocal < Formula
     strategy :crate
   end
 
+  bottle do
+    root_url "https://github.com/shuuul/homebrew-tap/releases/download/firecrawl-local-0.1.1"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "1422b2806de5c0d34f385179e1827c26269ebd3843f7ed9994be292405ad4e40"
+    sha256 cellar: :any,                 arm64_linux:       "937dfb4891de4f40052d88731b5e80f4419e98632ee669df3fad66d2763b3dca"
+    sha256 cellar: :any,                 x86_64_linux:      "deea69912819aadc00cd1b8e8e05e7970b39d2ebe7de6b7809f6cc722885ddfc"
+  end
+
   depends_on "rust" => :build
 
   def install
